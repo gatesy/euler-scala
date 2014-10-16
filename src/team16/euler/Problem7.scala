@@ -8,6 +8,28 @@ package team16.euler
  * What is the 10,001st prime number?
  */
 
-object Problem7 extends App {
+import Stream._
 
+object Problem7 extends App {
+  
+  def isPrime(primes: List[Long], x: Long) = primes.find(p => x % p == 0L) == None
+  
+  def addIfPrime(primes: List[Long], x: Long) = {
+    if(isPrime(primes, x)) primes :+ x
+    else primes
+  }
+
+  def addNextPrime(primes: List[Long], from: Long) = {
+    primes :+ ( iterate(from) { i => i + 1 } find(i => isPrime(primes, i)) get)
+  }
+  
+  val n = 10001
+  var primes = List[Long](2)
+  
+  while(primes.length < n) {
+    primes = addNextPrime(primes, primes.last)
+  }
+  
+  println(primes last)
+  
 }
