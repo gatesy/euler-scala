@@ -11,8 +11,17 @@ package team16.euler
  * the numbers from 1 to 20?
  */
 
-object Problem5 extends App {
+import Stream._
 
+object Problem5 extends App {
+  val factors = for(i <- 20L to 1 by -1) yield i
+  println("Factors -> " + factors)
   
+  val answer = 232792560L // computed by hand
+  println(answer + " is divisble by all? -> " + isDivisibleByAll(answer, factors))
+    
+  def isDivisibleByAll(n: Long, factors: Seq[Long]) = factors.find(x => !isDivisibleBy(n)(x)) == None
+  
+  def isDivisibleBy(n: Long)(f: Long) = n % f == 0
   
 }
