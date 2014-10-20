@@ -32,7 +32,7 @@ package team16.euler
 
 object Problem011 extends App {
   
-  def lines = scala.io.Source.fromFile("resources/Problem011.txt") getLines()
+  def lines = scala.io.Source.fromFile("resources/Problem011.txt") getLines 
   
   def processLine(line: String) : List[Int] = {
     val number = line.takeWhile { _ != ' ' } toInt
@@ -41,16 +41,46 @@ object Problem011 extends App {
     if(space_i != -1) List(number) ::: processLine(line.slice(space_i + 1, line.size))
     else List(number)
   }
-  
-  def productRight(start: Int, count: Int) = {
     
-  }
+  val grid = new Grid(lines.toList map processLine)
+  println (grid.toString)
   
-  val grid = (lines map processLine)
-  grid foreach println
+  val starting = for(row <- 0 to 16; col <- 0 to 16) yield Tuple2(row,col)
+  println (starting)
+  val a = starting map { t => grid.productRight(t._1, t._2, 4) }
+  val b = starting map { t => grid.productDown(t._1, t._2, 4) }
+  val c = starting map { t => grid.productDownRightDiagonal(t._1, t._2, 4) }
+  val d = for(row <- 3 to 19; col <- 0 to 16) yield grid.productUpRightDiagonal(row, col, 4)
+  
+  val max = (a ++ b ++ c ++ d)
+  println(max.max)
 }
 
-class Problem011 {
+class Grid(linesc : List[List[Int]]) {
+  val lines = linesc
   
+  def apply(row: Int, col: Int): Int = (lines apply row) apply col
   
+  def productRight(row: Int, col: Int, count: Int): Int = {
+    if(count == 0) 1
+    else apply(row, col) * productRight(row, col+1, count-1)
+  }
+  
+  def productDown(row: Int, col: Int, count: Int): Int = {
+    if(count == 0) 1
+    else apply(row, col) * productDown(row+1, col, count-1)
+  }
+  
+  def productDownRightDiagonal(row: Int, col: Int, count: Int): Int = {
+    if(count == 0) 1
+    else apply(row, col) * productDownRightDiagonal(row+1, col+1, count-1)
+  }
+  
+  def productUpRightDiagonal(row: Int, col: Int, count: Int): Int = {
+    if(count == 0) 1
+    else apply(row, col) * productUpRightDiagonal(row-1, col+1, count-1)
+  }
+  
+  override def toString(): String = linesc toString
 }
+
