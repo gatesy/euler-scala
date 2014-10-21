@@ -38,11 +38,12 @@ object Problem10 extends App {
   }
   
   // This causes a stack overflow
-  def byStream(max: Int) : Long = {
+  def byStream(max: Int) : Stream[Long] = {
+    //@scala.annotation.tailrec
     def primeStream(s: Stream[Long]): Stream[Long] =
-      Stream.cons(s.head, primeStream(s.tail filter { _ % s.head != 0 }))
-    val primes = primeStream(Stream.iterate(2L) { _ + 1 })
-    primes takeWhile { _ < max } sum
-    //primes.foldLeft(0L)(_+_)
+      s.head #:: primeStream(s.tail filter { _ % s.head != 0 })
+    primeStream(iterate(2L) { _ + 1 })
   }
+  
+  //byStream(10) foreach println
 }

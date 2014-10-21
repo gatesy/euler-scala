@@ -35,6 +35,18 @@ object Problem012 extends App {
     divisors
   } 
   
-  def numberWith(divisors: Int) = (triangular takeWhile { x => countDivisors(x) <= divisors } takeRight 1).head
-  println(numberWith(501))
+  //def numberWithOver(divisors: Int) = (triangular takeWhile { x => !(countDivisors(x) > divisors) } takeRight 1).head
+  //println(numberWithOver(4))
+  
+  def getPrimeFactors(number: Long): List[Long] = {
+    val firstFactor = (2L to number) find { number % _ == 0 }
+    if(firstFactor == None) List[Long]()
+    else firstFactor.get :: getPrimeFactors(number / firstFactor.get)
+  }
+  
+  def f(factors: List[Long]) = {
+    
+  }
+  
+  println(getPrimeFactors(24L))
 }
