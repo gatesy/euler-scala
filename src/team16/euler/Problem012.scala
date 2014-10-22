@@ -24,67 +24,42 @@ import scala.collection._
 
 object Problem012 extends App {
 
+  // Infinite stream of triangular numbers
   val triangular: Stream[Long] = {
     def loop(nextNumber: Long, count: Long) : Stream[Long] = nextNumber #:: loop(nextNumber + count, count + 1)
     loop(1, 2)
   }
   
-  // Speed this up by having a lookup table. It's far too slow without it
-  def countDivisors(number: Long): Int = {
-    val start: Long = number + 1L / 2L
-    val divisors: Int = ((start to 1L by -1L) filter { number % _ == 0}).length
-    if(divisors > 100) println(number + ": " + divisors)
-    divisors
-  }
-  
-  def countDivisorsN(lookupTable: mutable.Map[Long, List[Long]], number: Long) = {
-    f(getPrimeFactors(lookupTable, number))
-  }
-  
-  //def numberWithOver(divisors: Int) = (triangular takeWhile { x => !(countDivisors(x) > divisors) } takeRight 1).head
-  //println(numberWithOver(4))
-  
-  def getPrimeFactors(lookupTable: mutable.Map[Long, List[Long]], number: Long) : List[Long] = {
+  // Use a lookup table to save recalculating sub-factors we've factorised before.
+  def primeFactors(lookupTable: mutable.Map[Long, List[Long]], number: Long): List[Long] = {
     def getPrimeFactors(number: Long): List[Long] = {
-      if (lookupTable contains number) lookupTable(number)
-      else {
-        val firstFactor = (2L to number / 2L) find { number % _ == 0 }
+      lookupTable.getOrElseUpdate(number, { 
+        val firstFactor = (2L to number) find { number % _ == 0 }
         if(firstFactor == None) List[Long]()
         else firstFactor.get :: getPrimeFactors(number / firstFactor.get)
+      })
+    }
+    getPrimeFactors(number)
+  }
+  
+  def countDivisors(primeFactors: List[Long]) = {
+    def buildAccumulator(remainder: List[Long]): Map[Long, Int] = remainder match {
+      case Nil => Map[Long, Int]()
+      case x :: xs => {
+        val rest = buildAccumulator(xs)
+        val count = (rest getOrElse(x, 0)) + 1
+        rest + (x -> count)
       }
     }
-    val factors = getPrimeFactors(number)
-    lookupTable(number) = factors
-    factors
+    buildAccumulator(primeFactors).values.foldLeft(1) { (total, x) => total * (x+1) }
   }
   
-  // Given a list of prime factors, calculate the number of divisors.
-  // This is equal to the powers of each factor (plus 1) multiplied together.
-  def f(factors: List[Long]) = {
-    var accumulator = mutable.Map[Long, Int]()
-    factors foreach { x:Long => accumulator(x) = accumulator.getOrElse(x, 0) + 1 }
-    
-    (accumulator values).foldLeft(1) { (total, x) => total * (x+1) }
-  }
-  
-  def numberWithOver(divisors: Int) = {
+  def numberWithOver(divisors: Int) : Long = {
     var lookupTable = mutable.Map[Long, List[Long]]();
-    triangular takeWhile { x =>
-      val divs = countDivisorsN(lookupTable, x)
-      println(x + " --> " + divs)
-      divs <= divisors 
-    } takeRight 1
+    triangular find { x => countDivisors(primeFactors(lookupTable, x)) > divisors } get
   }
   
-  //println(f(List(2,2,3)))
-  
-  //println(getPrimeFactors(27L, Map()))
-  
-  //var lookupTable = mutable.Map[Long, List[Long]]()
-  //(1L to 50000L) foreach { x => println(x + ":-> " + countDivisorsN(lookupTable, x)) }
-  
-  //triangular take 10 foreach println
-  println(numberWithOver(5))
-  //println(numberWithOver(500))
+  println("First triangular number with over 5 divisors -> " + numberWithOver(5))
+  println("First triangular number with over 500 divisors -> " + numberWithOver(500))
   
 }
