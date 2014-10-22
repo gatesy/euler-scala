@@ -20,6 +20,8 @@ package team16.euler
  * What is the value of the first triangle number to have over five hundred divisors?
  */
 
+import scala.collection._
+
 object Problem012 extends App {
 
   val triangular: Stream[Long] = {
@@ -33,20 +35,56 @@ object Problem012 extends App {
     val divisors: Int = ((start to 1L by -1L) filter { number % _ == 0}).length
     if(divisors > 100) println(number + ": " + divisors)
     divisors
-  } 
+  }
+  
+  def countDivisorsN(lookupTable: mutable.Map[Long, List[Long]], number: Long) = {
+    f(getPrimeFactors(lookupTable, number))
+  }
   
   //def numberWithOver(divisors: Int) = (triangular takeWhile { x => !(countDivisors(x) > divisors) } takeRight 1).head
   //println(numberWithOver(4))
   
-  def getPrimeFactors(number: Long): List[Long] = {
-    val firstFactor = (2L to number) find { number % _ == 0 }
-    if(firstFactor == None) List[Long]()
-    else firstFactor.get :: getPrimeFactors(number / firstFactor.get)
+  def getPrimeFactors(lookupTable: mutable.Map[Long, List[Long]], number: Long) : List[Long] = {
+    def getPrimeFactors(number: Long): List[Long] = {
+      if (lookupTable contains number) lookupTable(number)
+      else {
+        val firstFactor = (2L to number / 2L) find { number % _ == 0 }
+        if(firstFactor == None) List[Long]()
+        else firstFactor.get :: getPrimeFactors(number / firstFactor.get)
+      }
+    }
+    val factors = getPrimeFactors(number)
+    lookupTable(number) = factors
+    factors
   }
   
+  // Given a list of prime factors, calculate the number of divisors.
+  // This is equal to the powers of each factor (plus 1) multiplied together.
   def f(factors: List[Long]) = {
+    var accumulator = mutable.Map[Long, Int]()
+    factors foreach { x:Long => accumulator(x) = accumulator.getOrElse(x, 0) + 1 }
     
+    (accumulator values).foldLeft(1) { (total, x) => total * (x+1) }
   }
   
-  println(getPrimeFactors(24L))
+  def numberWithOver(divisors: Int) = {
+    var lookupTable = mutable.Map[Long, List[Long]]();
+    triangular takeWhile { x =>
+      val divs = countDivisorsN(lookupTable, x)
+      println(x + " --> " + divs)
+      divs <= divisors 
+    } takeRight 1
+  }
+  
+  //println(f(List(2,2,3)))
+  
+  //println(getPrimeFactors(27L, Map()))
+  
+  //var lookupTable = mutable.Map[Long, List[Long]]()
+  //(1L to 50000L) foreach { x => println(x + ":-> " + countDivisorsN(lookupTable, x)) }
+  
+  //triangular take 10 foreach println
+  println(numberWithOver(5))
+  //println(numberWithOver(500))
+  
 }
