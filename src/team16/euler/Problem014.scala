@@ -18,6 +18,6 @@ package team16.euler
  * NOTE: Once the chain starts the terms are allowed to go above one million.
  */
 
-object Problem014 {
+object Problem014 extends App {
 
 }
