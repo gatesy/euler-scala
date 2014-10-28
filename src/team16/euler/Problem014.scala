@@ -21,71 +21,62 @@ package team16.euler
 import scala.collection._
 
 object Problem014 extends App {
-  val collatz = new Collatz
-  //for(i <- 2 to 13) { println(collatz getLength2 i) }
-  println(collatz.getLength(13))
-  println(collatz.getLength(99996))
+  val largest = 1000000
+  val collatz = new Collatz(largest)
   
-  for(i <- 1 until 1000000) { collatz getLength i }
+  for(i <- 1 until largest) { collatz getLength i }
   println("Table built")
   println(collatz max)
 }
 
-class Collatz {
-  private var table = new Array[Int](2); // Starting number -> length
-  private val largest = 0
+class Collatz(tableSize: Int) {
+  private var table = new Array[Int](tableSize); // Starting number -> length
   table(1) = 1
   
   def getLength(start: Int): Int = {
     val chain = buildChain(start, List())
+    val lastLen = table(chain.head.toInt)
+    /*
     println(chain)
-    updateTable(chain)
-    println(table toString)
-    val len = table(start)
-    len
+    println(start + " -> " + lastLen + " + " + (chain.length-1) + " = " + (lastLen + chain.length -1))
+    */
+    updateTable(chain, lastLen)
+    table(start)
   }
   
   // Build a chain until we hit a known value.
   @scala.annotation.tailrec
-  private def buildChain(from: Int, accumulator: List[Int]): List[Int] = {
-    if(table.length > from && table(from) != 0) from :: accumulator
+  private def buildChain(from: Long, accumulator: List[Long]): List[Long] = {
+    if(table.length > from && table(from.toInt) != 0) from :: accumulator
     else buildChain(next(from), from :: accumulator)
   }
   
-  // Update the table given a chain.
+  // Update the table given a chain and the sequence length of the head
   @scala.annotation.tailrec
-  private def updateTable(chain: List[Int]): Unit = {
-    val lastLen = table(chain head)
+  private def updateTable(chain: List[Long], headLen: Int): Unit = {
+    addLookup(chain head, headLen)
     val chainTail = chain tail
     
     if(!chainTail.isEmpty) {
-      addLookup(chainTail head, lastLen + 1)
-      updateTable(chainTail)
+      updateTable(chainTail, headLen + 1)
     }
   }
   
-  private def addLookup(from: Int, length: Int): Unit = {
-    while(table.length <= from) {
-      growTable
-    }
-    table(from) = length
+  private def addLookup(from: Long, length: Int): Unit = {
+    if(from < table.length) table(from.toInt) = length
   }
-  
-  private def growTable() = {
-    val oldTable = table
-    table = new Array[Int](table.length * 2)
-    oldTable.copyToArray(table)
-  }
-  
-  def next(from: Int): Int = {
-    if(from % 2 == 0) from / 2
-    else from * 3 + 1
+    
+  def next(from: Long): Long = {
+    if(from % 2L == 0) from / 2L
+    else from * 3L + 1L
   }
   
   def max() = {
-    println(table)
-    //table maxBy { case (x,y) => y }
-    table max
+    val r = table.foldLeft((0,0L,0)) { 
+      case((max_i,max_len, i) , len) => 
+        if(len > max_len) (i,len,i+1) 
+        else (max_i, max_len,i+1) }
+    (r._1 -> r._2)
   }
   
 }
