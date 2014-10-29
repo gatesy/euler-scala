@@ -11,4 +11,11 @@ package team16.euler
 
 object Problem016 extends App {
 
+  val num = BigInt(2) pow 1000
+  println(num)
+  
+  val digits = num toString() map { _.asDigit }
+  println(digits)
+  
+  println("Sum of digits = " + (digits sum))
 }
