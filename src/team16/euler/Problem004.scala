@@ -10,7 +10,7 @@ package team16.euler
  * Find the largest palindrome made from the product of two 3-digit numbers.
  */
 
-object Problem4 extends App {
+object Problem004 extends App {
   val numbers = for(i <- 999L to 100L by -1; j <- 999L to 100L by -1) yield i*j
   val numpal = (numbers filter(x => isPalindrome(x.toString toList))).max
   println(numpal)

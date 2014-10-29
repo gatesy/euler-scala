@@ -10,7 +10,7 @@ package team16.euler
 
 import Stream._
 
-object Problem7 extends App {
+object Problem007 extends App {
   
   def isPrime(primes: List[Long], x: Long) = primes.find(p => x % p == 0L) == None
   

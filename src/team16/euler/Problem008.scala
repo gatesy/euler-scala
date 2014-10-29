@@ -25,7 +25,7 @@ package team16.euler
  * Find the thirteen adjacent digits in the 1000-digit number that have the greatest product. What is the value of this product?
  */
 
-object Problem8 extends App {
+object Problem008 extends App {
 
   def adjacentProduct(number: List[Long], start: Int, count: Int) = {
     number.slice(start, start + count) product

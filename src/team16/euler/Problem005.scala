@@ -13,7 +13,7 @@ package team16.euler
 
 import Stream._
 
-object Problem5 extends App {
+object Problem005 extends App {
   val factors = for(i <- 20L to 1 by -1) yield i
   println("Factors -> " + factors)
   

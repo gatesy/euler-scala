@@ -10,7 +10,7 @@ package team16.euler;
  * Find the sum of all the multiples of 3 or 5 below 1000.
  */
 
-object Problem1 extends App {
+object Problem001 extends App {
   println("Hello, World!")
   val values = listOfMultiples(List(3,5), 1000)
   val sum = values.foldLeft(0)(_+_)

@@ -15,7 +15,7 @@ package team16.euler
  * and the square of the sum.
  */
 
-object Problem6 extends App {
+object Problem006 extends App {
   val nums = 1 to 100
   val squares = nums map { x => x*x }
   val sumOfSquares = squares sum

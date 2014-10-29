@@ -11,7 +11,7 @@ package team16.euler
 
 import Stream._
 
-object Problem9 extends App {
+object Problem009 extends App {
 
     def getC(a: Int, b: Int) = math.sqrt(a * a + b * b)
     

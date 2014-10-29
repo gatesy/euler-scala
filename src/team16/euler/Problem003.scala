@@ -11,7 +11,7 @@ package team16.euler
 
 import scala.collection.mutable.MutableList
 
-object Problem3 extends App {
+object Problem003 extends App {
   val num = 600851475143L
   //val num = 49L
   println("Number = " + num)

@@ -11,7 +11,7 @@ package team16.euler
 
 import Stream._
 
-object Problem10 extends App {
+object Problem010 extends App {
 
   // This is slow - we should use a sieve and a table
   val p = (2L to 2000000L).foldLeft(List(2L) : Seq[Long])(addIfPrime)

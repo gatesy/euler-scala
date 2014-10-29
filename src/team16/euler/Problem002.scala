@@ -12,7 +12,7 @@ package team16.euler
  * find the sum of the even-valued terms.
  */
 
-object Problem2 extends App {
+object Problem002 extends App {
   val sum = sumEvenFib(4000000)
   println(sum)
   
