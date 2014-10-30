@@ -37,6 +37,45 @@ package team16.euler
  * be solved by brute force, and requires a clever method! ;o)
  */
 
-object Problem018 {
+import scala.collection._
 
+object Problem018 extends App {
+  val a = List[Int](3, 7, 4, 2, 4, 6, 8, 5, 9, 3)
+  for(i <- 1 to 4) {
+    val idx = Triangle.rowRange(i)
+    println(a.slice(idx._1, idx._2))
+  }
+  for(i <- 1 to 4) println(Triangle.rowRange(i))
+  
+  println(Triangle.row(5))
+  println(Triangle.children(4))
 }
+
+object Triangle {
+  def rowRange(row: Int): (Int, Int) = {
+    val rowMinus1 = row * (row-1) / 2
+    (rowMinus1, rowMinus1 + row)
+  }
+  
+  def row(index: Int): Int = {
+    def rowRec(index: Int, currentRow: Int): Int = {
+      val range = rowRange(currentRow)
+      if(range._1 <= index && range._2 > index) currentRow
+      else rowRec(index, currentRow + 1)
+    }
+    rowRec(index, 1)
+  }
+  
+  def children(index: Int): (Int, Int) = {
+    val rowNum = row(index)
+    val rowStart = rowRange(rowNum)._1
+    val nextRowStart = rowRange(rowNum+1)._1
+    val pos = index - rowStart
+    (nextRowStart+pos, nextRowStart+pos+1)
+  }
+}
+
+class Data(value: Int, maxSum: Int) {
+  
+}
+
