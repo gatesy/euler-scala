@@ -49,6 +49,8 @@ object Problem018 extends App {
   
   println(Triangle.row(5))
   println(Triangle.children(4))
+  
+  val t = new Triangle(a)
 }
 
 object Triangle {
@@ -73,6 +75,11 @@ object Triangle {
     val pos = index - rowStart
     (nextRowStart+pos, nextRowStart+pos+1)
   }
+}
+
+class Triangle(values: List[Int]) {
+  private val data = values map { new Data(_, 0) }
+  println(Triangle.rowRange(Triangle.row(data.length-1)))
 }
 
 class Data(value: Int, maxSum: Int) {
